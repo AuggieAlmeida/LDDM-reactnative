@@ -1,35 +1,75 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 
-export default function App() {
+const App = () => {
+  const [peso, setPeso] = useState('');
+  const [altura, setAltura] = useState('');
+  const [imc, setImc] = useState<null|Number>(null);
+
+  const calcularIMC = () => {
+    const alturaMetros = parseFloat(altura) / 100; // Convertendo de centímetros para metros
+    const imcCalculado = parseFloat(peso) / (alturaMetros * alturaMetros);
+    setImc(imcCalculado); // Arredondando para duas casas decimais
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Hello World!</Text>
-      <Text style={styles.title2}>Hello World!</Text>
-      <StatusBar style="auto" />
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          value={peso.toString()}
+          onChangeText={(texto)=>setPeso(texto)}
+          placeholder="Peso (kg)"
+          keyboardType="numeric"
+        />
+        <TextInput
+          style={styles.input}
+          value={altura.toString()}
+          onChangeText={(texto)=>setAltura(texto)}
+          placeholder="Altura (cm)"
+          keyboardType="numeric"
+        />
+        <Button title="Calcular IMC" onPress={calcularIMC} />
+      </View>
+
+      {imc && (
+        <View style={styles.card}>
+          <Text style={styles.cardText}>Peso: {peso.toString()} kg</Text>
+          <Text style={styles.cardText}>Altura: {altura.toString()} cm</Text>
+          <Text style={styles.cardText}>IMC: {imc.toFixed(2)}</Text>
+        </View>
+      )}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 700,
-    fontFamily: 'Velvetica',
-    color: '#000000ff',
+  inputContainer: {
+    width: '80%',
   },
-  title2: {
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 10,
+    padding: 10,
+  },
+  card: {
+    marginTop: 20,
+    padding: 20,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 10,
+  },
+  cardText: {
     fontSize: 16,
-    fontWeight: 400,
-    fontFamily: 'Velvetica',
-    color: '#9c0d0dff',
-    marginTop: 10
+    marginBottom: 5,
   },
-
 });
+
+export default App;
